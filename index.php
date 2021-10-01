@@ -1,21 +1,47 @@
 <?php
 
-print_r($_POST);
-echo "<hr>";
+// print_r($_POST);
+// echo "<hr>";
 
-require __DIR__ . "/App/Conect.php";
+// require __DIR__ . "/App/Conect.php";
 
-use App\Conect;
+// use App\Conect;
 
-if (!empty($_POST['email']) and !empty($_POST['password'])) {
+//Yours dates connect database
+$dsn = "mysql:host=localhost;dbname=php_pdo";
+$user = "root";
+$pwd = "";
 
-    $conn = new Conect();
+try {
+    if (!empty($_POST['email']) and !empty($_POST['password'])) {
+        $conn = new \PDO($dsn, $user, $pwd);
+        $query = "SELECT * FROM tb_users WHERE";
+        $query .= " email = :email";
+        $query .= " AND senha = :password";
 
-    echo "<pre>";
-    print_r($conn->myConected($_POST['email'], $_POST['password']));
-    echo "</pre>";
+        $connect = $conn->prepare($query);
+        $connect->bindValue(":email", $_POST['email']);
+        $connect->bindValue(":password", $_POST['password']);
+        $connect->execute();
+        $dadosUser = $connect->fetch();
 
+        $objectUser = (object) $dadosUser;
+        $array = (array) $objectUser;
+
+
+        echo 'Usuario Logado com sucesso<br>';
+        echo $query . '<br>';
+        echo '<pre>';
+        print_r($array);
+        echo '</pre>';
+    } else {
+        echo "Erro ao fazer login";
+    }
+} catch (\PDOException $th) {
+    echo "Código do Erro: {$th->getCode()} - Mensagem de Erro: {$th->getMessage()}";
 }
+
+
 
 ?>
 
