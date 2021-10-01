@@ -3,7 +3,7 @@
 print_r($_POST);
 echo "<hr>";
 
-require __DIR__ . "/Conect.php";
+require __DIR__ . "/App/Conect.php";
 
 use App\Conect;
 
